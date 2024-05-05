@@ -15,6 +15,7 @@ export default function Confimation({route, navigation}){
         }
     }, [location]); 
     const donationData = {
+        name: name,
         no_of_servings: values,
         food_category: selectedCategory,  // Ensure this corresponds to a simple string or number
         meal_type: selectedmealType,      // Ensure this corresponds to a simple string or number

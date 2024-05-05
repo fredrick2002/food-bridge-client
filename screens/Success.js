@@ -8,6 +8,8 @@ export default function Success({route, navigation}){
         navigation.navigate('Update', { name: name, location: location, number: number, values: values, dishes: dishes });
     };
 
+    console.log(location);
+
     return (
         <SafeAreaView style={styles.container}>
             <Image source={require("../assets/success.png")} style={styles.successImg}/>

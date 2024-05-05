@@ -1,27 +1,30 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, SafeAreaView , TouchableOpacity} from 'react-native';
+import axios from 'axios';
 
 // Card items
-const Card = ({ title, time, servings, rlocation, category, countDishes, onPress }) => {
+const Card = ({ donorName, time, servings, rlocation, category, countDishes, onPress }) => {
   const getCategoryImage = () => {
     switch (category.toLowerCase()) {
-      case 'veg':
+      case 'Veg':
         return require("../assets/veg.png");
-      case 'non veg':
+      case 'Non-Veg':
         return require("../assets/nonveg.png");
-      case 'both':
+      case 'Both':
         return require("../assets/both.png");
       default:
         return 
     }
   };
 
+  
+
   return (
     <TouchableOpacity onPress={onPress}>
       <View style={styles.card}>
         <Image source={require("../assets/account.png")} style={styles.cardIcons}/>
         <View style={styles.cardTop}>
-          <Text style={styles.donorName}>{title}</Text>
+          <Text style={styles.donorName}>{donorName}</Text>
           <Text>{time}</Text>
         </View>
         <View style={styles.servingsContainer}>
@@ -39,17 +42,85 @@ const Card = ({ title, time, servings, rlocation, category, countDishes, onPress
 
 export default function ReceiverHomeScreen({ route, navigation }) {
   const { location, name, number } = route.params;
+  const [cardData, setCardData] = useState([]);
+  const [district, setDistrict] = useState([]);
 
-  const handlePress = (item) => {
-    navigation.navigate('cardDetials', {
-      title: item.title,
-      time: item.time,
-      servings: item.servings,
-      rlocation: item.rlocation,
-      category: item.category,
-      countDishes: item.countDishes
-    });
+
+  useEffect(() => {
+    async function getDistrictFromAddress(location) {
+      const apiKey = 'AIzaSyCWmtbqBAtrsdrpGnv86gF9qU7CZokuHqI'; // Replace with your actual API key
+      const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(location)}&key=${apiKey}`;
+  
+      try {
+        const response = await axios.get(url);
+        if (response.data.status === 'OK' && response.data.results.length > 0) {
+          const components = response.data.results[0].address_components;
+          const districtComponent = components.find(c => c.types.includes('administrative_area_level_3'));
+          return districtComponent ? districtComponent.long_name : 'District not found';
+        } else {
+          console.log('No results or error:', response.data.status);
+          return 'No district found';
+        }
+      } catch (error) {
+        console.error('Failed to fetch address details:', error);
+        return 'Error fetching district';
+      }
+    };
+  
+    if (location) {
+      getDistrictFromAddress(location).then(districtResult => {
+        console.log('District:', districtResult);
+        setDistrict(districtResult); 
+        fetchData(districtResult);
+      });
+    }
+  }, [location]);
+
+  //Fetch data by district
+  function fetchData(district) {
+    if (!district) return; // Ensure district is not empty
+
+    axios.get(`http://192.168.29.182:3000/api/donations?district=${encodeURIComponent(district)}`)
+      .then(response => {
+    // Convert the response data to JSON string
+    const jsonString = JSON.stringify(response.data);
+    console.log("JSON String:", jsonString);
+
+    // Parse the JSON string back to JavaScript object
+    const jsonObject = JSON.parse(jsonString);
+    console.log("Re-parsed JSON Object:", jsonObject);
+
+    // Now, map over your jsonObject to structure it for your application's state
+    const fetchedData = jsonObject.map(item => ({
+      donorName: item.name,
+      time: 'Some time ago', // Example placeholder
+      servings: `${item.no_of_servings} servings`,
+      rlocation: item.location ? item.location.district : 'No address provided',
+      category: item.food_category,
+      countDishes: item.dishes ? item.dishes.length : 0,
+      onPress: () => handlePress(item),
+    }));
+    
+    setCardData(fetchedData);
+    console.log(fetchedData);
+  })
+  .catch(error => {
+    console.error('Failed to fetch donations:', error);
+  });
   }
+  
+
+
+  // const handlePress = (item) => {
+  //   navigation.navigate('CardDetails', {
+  //     donorName: item.name,
+  //     time: item.time,
+  //     servings: item.servings,
+  //     rlocation: item.rlocation,
+  //     category: item.category,
+  //     countDishes: item.countDishes
+  //   });
+  // }
 
   // Split the address string at the comma and take the first part
   const addressParts = location.split(',');
@@ -60,11 +131,11 @@ export default function ReceiverHomeScreen({ route, navigation }) {
   const truncatedLocation = location.length > maxLength ? location.substring(0, maxLength) + '...' : location;
 
   // Card data
-  const cardData = [
-    { title: 'Solomon', time: '20 minutes ago', servings: "50 servings", rlocation: "kaniyakumari", category: "Veg", countDishes: "13" },
-    { title: 'Dinesh', time: '01 hours ago', servings: "75 servings", rlocation: "chennai", category: "Non Veg", countDishes: "10" },
-    { title: 'Ponnu', time: '30 minutes ago', servings: "25 servings", rlocation: "dharmapui", category: "Both", countDishes: "18" },
-  ];
+  // const cardData = [
+  //   { donorName: 'Solomon', servings: "50 servings", rlocation: "kaniyakumari", category: "Veg", countDishes: "13" },
+  //   { donorName: 'Dinesh', servings: "75 servings", rlocation: "chennai", category: "Non Veg", countDishes: "10" },
+  //   { donorName: 'Ponnu', servings: "25 servings", rlocation: "dharmapui", category: "Both", countDishes: "18" },
+  // ];
 
   return (
     <SafeAreaView style={styles.container}>
@@ -83,9 +154,8 @@ export default function ReceiverHomeScreen({ route, navigation }) {
         {cardData.map((item, index) => (
           <Card
             key={index}
-            title={item.title}
-            time={item.time}
-            servings={item.servings}
+            donorName={item.donorName}
+            servings={`${item.servings} servings`}
             rlocation={item.rlocation}
             category={item.category}
             countDishes={item.countDishes}

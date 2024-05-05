@@ -7,12 +7,12 @@ export default function Screen2({ route, navigation }) {
 
   const handleDonorPress = () => {
     // Handle Donor button press
-    navigation.navigate('DonorLocation', {name: name, number:number}); 
+    navigation.navigate('donorLogin', {name: name, number:number}); 
   };
   
   const handleReceiverPress = () => {
     // Handle Receiver button press
-    navigation.navigate('ReceiverDetails' , {name: name, number:number}); 
+    navigation.navigate('receiverLogin' , {name: name, number:number}); 
   };
   
 
