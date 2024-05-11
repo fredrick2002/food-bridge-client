@@ -7,6 +7,8 @@ export default function ReceiverLocation({ navigation, route }) {
   const { name } = route.params;
   const {number} = route.params;
   const [locate, setLocate] = useState('');
+  const apiKey = process.env.EXPO_PUBLIC_API_KEY; 
+  console.log(apiKey);
 
   const getCurrentLocation = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
@@ -20,7 +22,8 @@ export default function ReceiverLocation({ navigation, route }) {
   };
 
   const getAddressFromCoords = async (latitude, longitude) => {
-    const apiKey = 'AIzaSyCWmtbqBAtrsdrpGnv86gF9qU7CZokuHqI';  // Make sure you replace this with your actual API key
+    
+    
     const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`);
     const responseJson = await response.json();
     if (responseJson.results.length > 0) {
@@ -37,7 +40,7 @@ export default function ReceiverLocation({ navigation, route }) {
       setLocate(address); // Update the text input with the fetched address
       navigation.navigate('ReceiverHomescreen', { location: address, name: name , number: number});
     } catch (error) {
-      Alert.alert('Error', 'Unable to fetch location: ' + error.message);
+      // Alert.alert('Error', 'Unable to fetch location: ' + error.message);
     }
   };
 
@@ -49,12 +52,24 @@ export default function ReceiverLocation({ navigation, route }) {
           source={require('../assets/search1.png')}
           style={styles.placeholderImage}
         />
-        <TextInput
-          placeholder="Try GKM palace, etc"
-          style={styles.input}
-          value={locate}
-          onChangeText={(text) => setLocate(text)}
-          placeholderTextColor="#969698"
+        <GooglePlacesAutocomplete
+          placeholder='Try GKM palace, etc'
+          fetchDetails={true}
+          onPress={(data, details = null) => {
+            // 'details' is provided when fetchDetails = true
+            console.log(data, details);
+            navigation.navigate('Homescreen', { location: details.formatted_address, name, number });
+          }}
+          query={{
+            key: apiKey,
+            language: 'en',
+            types: 'geocode', // Can be 'establishment', 'addresses', 'geocode', 'regions', and more
+          }}
+          styles={{
+            textInput: styles.input,
+          }}
+          nearbyPlacesAPI='GooglePlacesSearch'
+          debounce={200} // Add a delay as user types
         />
       </View>
       <View style={styles.currentContainer}>

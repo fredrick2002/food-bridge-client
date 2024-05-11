@@ -1,20 +1,30 @@
 import React from 'react';
 import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, Image } from 'react-native';
 
-export default function Screen2({ route, navigation }) {
+export default function Roles({ route, navigation }) {
   const { name } = route.params;
-  const{ number } = route.params;
+  const{ mobileNumber } = route.params;
+  const{ email } = route.params;
 
   const handleDonorPress = () => {
     // Handle Donor button press
-    navigation.navigate('donorLogin', {name: name, number:number}); 
+    navigation.navigate('DonorLogin', {
+      name: name,
+      mobileNumber: mobileNumber,
+      email: email,
+      userType: 0 // 0 represents donor
+    }); 
   };
   
   const handleReceiverPress = () => {
     // Handle Receiver button press
-    navigation.navigate('receiverLogin' , {name: name, number:number}); 
+    navigation.navigate('ReceiverLogin', {
+      name: name,
+      mobileNumber: mobileNumber,
+      email: email,
+      userType: 1 // 1 represents receiver
+    }); 
   };
-  
 
   return (
     <SafeAreaView style={styles.container}>

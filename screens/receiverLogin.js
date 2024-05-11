@@ -3,16 +3,22 @@ import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, Image } from 'r
 import { TextInput } from 'react-native-gesture-handler';
 
 export default function ReceiverLogin({ route, navigation }) {
-  const { name, number: initialNumber } = route.params; // Destructure initial number from route params
+  const { name, mobileNumber: initialNumber, email:email, userType:userType } = route.params; // Destructure initial number from route params
 
-  const [number, setNumber] = useState(initialNumber.toString()); // Set initial number as state
+  const [mobileNumber, setNumber] = useState(initialNumber.toString()); // Set initial number as state
 
   const [password, setPassword] = useState('');
   const [cPassword, setConfirmPassword] = useState('');
 
   const handleReciverPress = () => {
       // Handle Donor button press
-      navigation.navigate('ReceiverDetails', { name: name, number: number });
+      navigation.navigate('ReceiverDetails', { 
+        name: name,
+        email:email, 
+        mobileNumber: mobileNumber,
+        password: password,
+        userType: userType
+      });
   };
 
   return (
@@ -25,7 +31,7 @@ export default function ReceiverLogin({ route, navigation }) {
                   <TextInput
                       style={styles.inputBoxnumber}
                       placeholder="Enter your mobile number here"
-                      value={number} // Use state value
+                      value={mobileNumber} // Use state value
                       onChangeText={setNumber} // Update state on change
                       keyboardType="numeric"
                   />
@@ -65,9 +71,9 @@ export default function ReceiverLogin({ route, navigation }) {
                   
               </View>
               <TouchableOpacity
-                  style={[styles.button, (!number || !password || !cPassword) ? styles.disabledButton : styles.enabledButton]}
+                  style={[styles.button, (!mobileNumber || !password || !cPassword) ? styles.disabledButton : styles.enabledButton]}
                   onPress={handleReciverPress}
-                  disabled={!number || !password || !cPassword}
+                  disabled={!mobileNumber || !password || !cPassword}
                   activeOpacity={0.8}
               >
                   <Text style={styles.buttonText}>Get Started</Text>
@@ -126,7 +132,6 @@ const styles = StyleSheet.create({
       // position:"absolute",
     },
     button: {
-      marginTop:350,
       paddingVertical: 15,
       paddingHorizontal: 20,
       alignItems: 'center',

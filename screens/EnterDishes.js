@@ -10,7 +10,7 @@ const chunkArray = (array, size) => {
     return chunkedArray;
 }
 
-export default function Enterdishes({ route, navigation }) {
+export default function EnterDishes({ route, navigation }) {
     const { location } = route.params;
     const { name } = route.params;
     const { number } = route.params;

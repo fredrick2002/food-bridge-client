@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, SafeAreaView, TextInput, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 
+const SERVER_IP = process.env.EXPO_PRIVATE_SERVER_IP;
+
 export default function Confimation({route, navigation}){
     const { location, name, number, values, dishes, selectedCategory, selectedmealType,} = route.params;
     const [district, setDistrict] = useState(''); // State to hold the district
@@ -30,7 +32,7 @@ export default function Confimation({route, navigation}){
     const handleConfirm = async () => {
         console.log(donationData);
         try {
-          const response = await axios.post('http://192.168.29.182:3000/api/donations', donationData,{
+          const response = await axios.post(`http://${SERVER_IP}/api/donations`, donationData,{
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -43,7 +45,7 @@ export default function Confimation({route, navigation}){
         }
       };
     async function getDistrictFromAddress(address) {
-        const apiKey = 'AIzaSyCWmtbqBAtrsdrpGnv86gF9qU7CZokuHqI'; // Replace with your actual Google API key
+        const apiKey = process.env.EXPO_PRIVATE_API_KEY; // Replace with your actual Google API key
         const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${apiKey}`;
     
         try {

@@ -20,7 +20,7 @@ export default function Donor1({ navigation, route }) {
   };
 
   const getAddressFromCoords = async (latitude, longitude) => {
-    const apiKey = 'AIzaSyCWmtbqBAtrsdrpGnv86gF9qU7CZokuHqI';  // Make sure you replace this with your actual API key
+    const apiKey = process.env.EXPO_PRIVATE_KEY_API_KEY;  // Make sure you replace this with your actual API key
     const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`);
     const responseJson = await response.json();
     if (responseJson.results.length > 0) {
@@ -49,12 +49,24 @@ export default function Donor1({ navigation, route }) {
           source={require('../assets/search1.png')}
           style={styles.placeholderImage}
         />
-        <TextInput
-          placeholder="Try GKM palace, etc"
-          style={styles.input}
-          value={locate}
-          onChangeText={(text) => setLocate(text)}
-          placeholderTextColor="#969698"
+        <GooglePlacesAutocomplete
+          placeholder='Try GKM palace, etc'
+          fetchDetails={true}
+          onPress={(data, details = null) => {
+            // 'details' is provided when fetchDetails = true
+            console.log(data, details);
+            navigation.navigate('Homescreen', { location: details.formatted_address, name, number });
+          }}
+          query={{
+            key: apiKey,
+            language: 'en',
+            types: 'geocode', // Can be 'establishment', 'addresses', 'geocode', 'regions', and more
+          }}
+          styles={{
+            textInput: styles.input,
+          }}
+          nearbyPlacesAPI='GooglePlacesSearch'
+          debounce={200} // Add a delay as user types
         />
       </View>
       <View style={styles.currentContainer}>

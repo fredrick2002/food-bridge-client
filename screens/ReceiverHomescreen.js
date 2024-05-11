@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, SafeAreaView , TouchableOpacity} from 'react-native';
 import axios from 'axios';
-
+const SERVER_IP = process.env.EXPO_PUBLIC_SERVER_IP;
 // Card items
 const Card = ({ donorName, time, servings, rlocation, category, countDishes, onPress }) => {
   const getCategoryImage = () => {
@@ -17,7 +17,6 @@ const Card = ({ donorName, time, servings, rlocation, category, countDishes, onP
     }
   };
 
-  
 
   return (
     <TouchableOpacity onPress={onPress}>
@@ -48,7 +47,7 @@ export default function ReceiverHomeScreen({ route, navigation }) {
 
   useEffect(() => {
     async function getDistrictFromAddress(location) {
-      const apiKey = 'AIzaSyCWmtbqBAtrsdrpGnv86gF9qU7CZokuHqI'; // Replace with your actual API key
+      const apiKey = process.env.EXPO_PUBLIC_API_KEY; // Replace with your actual API key
       const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(location)}&key=${apiKey}`;
   
       try {
@@ -75,12 +74,12 @@ export default function ReceiverHomeScreen({ route, navigation }) {
       });
     }
   }, [location]);
-
+ 
   //Fetch data by district
   function fetchData(district) {
     if (!district) return; // Ensure district is not empty
 
-    axios.get(`http://192.168.29.182:3000/api/donations?district=${encodeURIComponent(district)}`)
+    axios.get(`http://${SERVER_IP}/api/donations?district=${encodeURIComponent(district)}`)
       .then(response => {
     // Convert the response data to JSON string
     const jsonString = JSON.stringify(response.data);

@@ -11,8 +11,7 @@ export default function Screen1({ navigation }) {
   const handlePress = () => {
 
     if (name && mobileNumber && email) {
-      // Navigate to the next screen
-      navigation.navigate('Roles', {  name: name, number:mobileNumber });    
+      navigation.navigate('Roles', {  name: name, mobileNumber:mobileNumber, email:email });    
     } else {
       // Show alert if any input field is empty
       Alert.alert('Incomplete Details', 'Please fill in all the details');

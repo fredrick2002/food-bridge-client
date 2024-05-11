@@ -1,22 +1,56 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, Image, TextInput, Alert } from 'react-native';
 
-export default function Update({ route, navigation }) {
-    const [name, setName] = useState('');
-    const [mobileNumber, setMobileNumber] = useState('');
+
+
+export default function ReceiverDetails({ route, navigation }) {
+    
+    const SERVER_IP = process.env.EXPO_PUBLIC_SERVER_IP;
+
+    const { name, mobileNumber: mobileNumber, email:email, userType:userType, password:password } = route.params;
+    const [orgName, setOrgName] = useState('');
+    const [licenseNumber, setLicenseNumber] = useState('');
     const [address, setAddress] = useState('');
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [selectedOption, setSelectedOption] = useState('');
+    console.log(SERVER_IP);
 
     const handlePress = () => {
-        if (name && mobileNumber && address) {
-            // Navigate to the next screen
-            navigation.navigate('ReceiverLocation', { name: name, number: mobileNumber });
+        
+        if (name && mobileNumber && selectedOption && orgName && licenseNumber && address) {
+            fetch(`http://${SERVER_IP}/register`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    mobileNumber: mobileNumber,
+                    password: password, // Ensure this is securely handled and encrypted
+                    userType: userType
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                navigation.navigate('ReceiverLocation', {
+                    name: name,
+                    mobileNumber: mobileNumber,
+                    email: email,
+                    userType: userType,
+                    typeOfOrg: selectedOption,
+                    orgName: orgName,
+                    licenseNumber: licenseNumber,
+                    address: address
+                });
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
         } else {
-            // Show alert if any input field is empty
             Alert.alert('Incomplete Details', 'Please fill in all the details');
         }
     };
+    
 
     const handleDropdownSelect = (option) => {
         setSelectedOption(option);
@@ -35,8 +69,8 @@ export default function Update({ route, navigation }) {
                     <TextInput
                         style={[styles.input, selectedOption ? styles.selectedInput : null]}
                         placeholder="Choose your organization type"
-                        value={selectedOption || name}
-                        onChangeText={setName}
+                        value={selectedOption}
+                        onChangeText={setOrgName}
                         editable={false} // Prevents direct text input
                     />
                     <Image source={require("../assets/expand.png")} style={styles.expandImage} />
@@ -81,15 +115,15 @@ export default function Update({ route, navigation }) {
                         <TextInput
                             style={styles.input}
                             placeholder="enter your NGO's name here"
-                            value={name}
-                            onChangeText={setName}
+                            value={orgName}
+                            onChangeText={setOrgName}
                         />
                         <Text style={styles.inputHeader}>NGO License Number</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="enter your license Number here"
-                            value={mobileNumber}
-                            onChangeText={setMobileNumber}
+                            value={licenseNumber}
+                            onChangeText={setLicenseNumber}
                             keyboardType="numeric"
                         />
                         <Text style={styles.inputHeader}>NGO Address</Text>
@@ -107,15 +141,15 @@ export default function Update({ route, navigation }) {
                         <TextInput
                             style={styles.input}
                             placeholder="enter your Old age home's name here"
-                            value={name}
-                            onChangeText={setName}
+                            value={orgName}
+                            onChangeText={setOrgName}
                         />
                         <Text style={styles.inputHeader}>Old age home License Number</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="enter your license Number here"
-                            value={mobileNumber}
-                            onChangeText={setMobileNumber}
+                            value={licenseNumber}
+                            onChangeText={setLicenseNumber}
                             keyboardType="numeric"
                         />
                         <Text style={styles.inputHeader}>Old age home Address</Text>
@@ -133,15 +167,15 @@ export default function Update({ route, navigation }) {
                         <TextInput
                             style={styles.input}
                             placeholder="enter your Orphanage name here"
-                            value={name}
-                            onChangeText={setName}
+                            value={orgName}
+                            onChangeText={setOrgName}
                         />
                         <Text style={styles.inputHeader}>Orphanage License Number</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="enter your license Number here"
-                            value={mobileNumber}
-                            onChangeText={setMobileNumber}
+                            value={licenseNumber}
+                            onChangeText={setLicenseNumber}
                             keyboardType="numeric"
                         />
                         <Text style={styles.inputHeader}>Orphanage Address</Text>
@@ -159,15 +193,15 @@ export default function Update({ route, navigation }) {
                         <TextInput
                             style={styles.input}
                             placeholder="enter your Children`s home name here"
-                            value={name}
-                            onChangeText={setName}
+                            value={orgName}
+                            onChangeText={setOrgName}
                         />
                         <Text style={styles.inputHeader}>Children`s home License Number</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="enter your license Number here"
-                            value={mobileNumber}
-                            onChangeText={setMobileNumber}
+                            value={licenseNumber}
+                            onChangeText={setLicenseNumber}
                             keyboardType="numeric"
                         />
                         <Text style={styles.inputHeader}>Children`s home Address</Text>

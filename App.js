@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import Register from './screens/Register'; // Import your Screen1 component here
+import Welcome from './screens/Welcome'; 
 import Roles from './screens/Roles'; // Import your Screen2 component here
 import DonorLocation from './screens/DonorLocation';
 import HomeScreen from './screens/HomeScreen'; 
@@ -14,8 +14,8 @@ import ReceiverDetails from './screens/ReceiverDetails';
 import ReceiverLocation from './screens/ReceiverLocation';
 import ReceiverHomeScreen from './screens/ReceiverHomescreen';
 import CardDetails from './screens/CardDetails';
-import DonorLogin from './screens/donorLogin';
-import ReceiverLogin from './screens/receiverLogin';
+import DonorLogin from './screens/DonorLogin';
+import ReceiverLogin from './screens/ReceiverLogin';
 
 const Stack = createStackNavigator();
 
@@ -23,10 +23,10 @@ export default function App() {
   return (
   <NavigationContainer>
   <Stack.Navigator>
-  <Stack.Screen name="Register" component={Register} options={{ headerShown: false }}/>
+  <Stack.Screen name="Welcome" component={Welcome} options={{ headerShown: false }}/>
   <Stack.Screen name="Roles" component={Roles}  options={{ headerShown: false }}/>
-  <Stack.Screen name='donorLogin' component={DonorLogin} options={{headerShown: false}}/>
-  <Stack.Screen name='receiverLogin' component={ReceiverLogin} options={{headerShown: false}}/>
+  <Stack.Screen name='DonorLogin' component={DonorLogin} options={{headerShown: false}}/>
+  <Stack.Screen name='ReceiverLogin' component={ReceiverLogin} options={{headerShown: false}}/>
   <Stack.Screen name="DonorLocation" component={DonorLocation}  options={{ headerShown: false }}/>
   <Stack.Screen name= "HomeScreen" component={HomeScreen} options={{headerShown: false}}/>
   <Stack.Screen name= "EnterDetails" component={EnterDetails} options={{headerShown: false}}/>
