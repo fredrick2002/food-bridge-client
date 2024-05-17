@@ -38,4 +38,4 @@ yarn-error.*
 .env
 
 #programDATA
-%ProgramData/
+%ProgramData%/
