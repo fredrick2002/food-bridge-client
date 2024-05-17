@@ -1,19 +1,50 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, Image, Alert } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 
 export default function DonorLogin({ route, navigation }) {
-    const { name, number: initialNumber } = route.params; // Destructure initial number from route params
+  const SERVER_IP = process.env.EXPO_PUBLIC_SERVER_IP;
+    const { name, mobileNumber: initialNumber,userType: userType, email: email } = route.params; // Destructure initial number from route params
 
-    const [number, setNumber] = useState(initialNumber.toString()); // Set initial number as state
+    const [mobileNumber, setNumber] = useState(initialNumber.toString()); // Set initial number as state
 
     const [password, setPassword] = useState('');
     const [cPassword, setConfirmPassword] = useState('');
 
-    const handleDonorPress = () => {
-        // Handle Donor button press
-        navigation.navigate('DonorLocation', { name: name, number: number });
-    };
+    const handleDonorPress = async () => {
+      try {
+          if (name && mobileNumber && password === cPassword) {
+              const response = await fetch(`http://${SERVER_IP}/donor-reg`, {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                      name,
+                      email,
+                      mobileNumber: mobileNumber, // Convert to number
+                      password, // Ensure this is securely handled and encrypted
+                      userType
+                  })
+              });
+
+              if (response.ok) {
+                  const data = await response.json();
+                  console.log('Success:', data);
+                  navigation.navigate('Login', {});
+              } else {
+                  const errorData = await response.json();
+                  console.error('Error:', errorData);
+                  Alert.alert('Registration Failed', errorData.error || 'Failed to register');
+              }
+          } else {
+              Alert.alert('Incomplete Details', 'Please fill in all the details and ensure passwords match');
+          }
+      } catch (error) {
+          console.error('Error:', error);
+          Alert.alert('Registration Failed', 'Please try again later');
+      }
+  };
 
     return (
         <>
@@ -25,7 +56,7 @@ export default function DonorLogin({ route, navigation }) {
                     <TextInput
                         style={styles.inputBoxnumber}
                         placeholder="Enter your mobile number here"
-                        value={number} // Use state value
+                        value={mobileNumber} // Use state value
                         onChangeText={setNumber} // Update state on change
                         keyboardType="numeric"
                     />
@@ -65,9 +96,9 @@ export default function DonorLogin({ route, navigation }) {
                     
                 </View>
                 <TouchableOpacity
-                    style={[styles.button, (!number || !password || !cPassword) ? styles.disabledButton : styles.enabledButton]}
+                    style={[styles.button, (!mobileNumber || !password || !cPassword) ? styles.disabledButton : styles.enabledButton]}
                     onPress={handleDonorPress}
-                    disabled={!number || !password || !cPassword}
+                    disabled={!mobileNumber || !password || !cPassword}
                     activeOpacity={0.8}
                 >
                     <Text style={styles.buttonText}>Get Started</Text>
@@ -126,7 +157,7 @@ const styles = StyleSheet.create({
         // position:"absolute",
       },
       button: {
-        marginTop:350,
+        // marginTop:350,
         paddingVertical: 15,
         paddingHorizontal: 20,
         alignItems: 'center',

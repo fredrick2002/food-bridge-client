@@ -16,6 +16,7 @@ import ReceiverHomeScreen from './screens/ReceiverHomescreen';
 import CardDetails from './screens/CardDetails';
 import DonorLogin from './screens/DonorLogin';
 import ReceiverLogin from './screens/ReceiverLogin';
+import Login from './screens/Login';
 
 const Stack = createStackNavigator();
 
@@ -27,6 +28,7 @@ export default function App() {
   <Stack.Screen name="Roles" component={Roles}  options={{ headerShown: false }}/>
   <Stack.Screen name='DonorLogin' component={DonorLogin} options={{headerShown: false}}/>
   <Stack.Screen name='ReceiverLogin' component={ReceiverLogin} options={{headerShown: false}}/>
+  <Stack.Screen name='Login' component={Login} options={{headerShown: false}}/>
   <Stack.Screen name="DonorLocation" component={DonorLocation}  options={{ headerShown: false }}/>
   <Stack.Screen name= "HomeScreen" component={HomeScreen} options={{headerShown: false}}/>
   <Stack.Screen name= "EnterDetails" component={EnterDetails} options={{headerShown: false}}/>

@@ -13,12 +13,12 @@ export default function ReceiverDetails({ route, navigation }) {
     const [address, setAddress] = useState('');
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [selectedOption, setSelectedOption] = useState('');
-    console.log(SERVER_IP);
+    // console.log(SERVER_IP);
 
     const handlePress = () => {
         
         if (name && mobileNumber && selectedOption && orgName && licenseNumber && address) {
-            fetch(`http://${SERVER_IP}/register`, {
+            fetch(`http://${SERVER_IP}/receiver-reg`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -26,22 +26,20 @@ export default function ReceiverDetails({ route, navigation }) {
                 body: JSON.stringify({
                     mobileNumber: mobileNumber,
                     password: password, // Ensure this is securely handled and encrypted
-                    userType: userType
+                    userType: userType,
+                    name: name,
+                    mobileNumber: mobileNumber,
+                    email: email,
+                    typeOfOrg: selectedOption,
+                    orgName: orgName,
+                    licenseNumber: licenseNumber,
+                    address: address
                 })
             })
             .then(response => response.json())
             .then(data => {
                 console.log('Success:', data);
-                navigation.navigate('ReceiverLocation', {
-                    name: name,
-                    mobileNumber: mobileNumber,
-                    email: email,
-                    userType: userType,
-                    typeOfOrg: selectedOption,
-                    orgName: orgName,
-                    licenseNumber: licenseNumber,
-                    address: address
-                });
+                navigation.navigate('Login', { });
             })
             .catch((error) => {
                 console.error('Error:', error);

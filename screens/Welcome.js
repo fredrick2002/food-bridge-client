@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, SafeAreaView,TouchableOpacity, TextInput, Alert } from 'react-native';
 
-
-export default function Screen1({ navigation }) {
-
+export default function Welcome({ navigation }) {
   const [name, setName] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
   const [email, setEmail] = useState('');
+
+  
 
   const handlePress = () => {
 
@@ -17,6 +17,10 @@ export default function Screen1({ navigation }) {
       Alert.alert('Incomplete Details', 'Please fill in all the details');
     }
   };
+
+  const handleLogin = () => {
+    navigation.navigate('Login',{})
+  }
 
 
   return (
@@ -48,6 +52,10 @@ export default function Screen1({ navigation }) {
           keyboardType="email-address"
         />
       </View>
+      <View style = {styles.containerLogin}>
+                
+                <Text style = {styles.text}>Already Have an account? <Text onPress={handleLogin} style = {styles.innerText} >Login</Text></Text>
+      </View>
       <TouchableOpacity
         style={[styles.button, (!name || !mobileNumber || !email) ? styles.disabledButton : styles.enabledButton]}
         onPress={handlePress}
@@ -67,16 +75,19 @@ const styles = StyleSheet.create({
       padding: 20,
       justifyContent: 'space-between',
     },
+    
     description: {
       color: '#374151',
       fontWeight: '300',
       fontSize:18,
+  
     },
     baseText: {
       color: '#3468C0',
       fontSize: 30,
       fontWeight: '700',
       marginTop:56,
+
     },
     inner: {
       flex: 1,
@@ -87,12 +98,29 @@ const styles = StyleSheet.create({
       borderWidth: 1,
       borderRadius: 10,
       marginBottom: 20,
+
     },
     inputheader: {
       color:'#1D1D1D',
       fontSize:16,
       marginTop:20,
       paddingBottom: 10,
+
+    },
+    containerLogin:{
+      paddingTop:20,
+      justifyContent : "center",
+      alignItems: "center"
+    },
+    text:{
+      color:'#5A5959',
+    },
+    innerTexts:{
+      paddingTop:10,
+      color: '#3468C0',
+    },
+    innerText:{
+      color: '#3468C0',
     },
     button: {
         paddingVertical: 15,

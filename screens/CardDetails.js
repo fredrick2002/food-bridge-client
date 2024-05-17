@@ -1,13 +1,33 @@
-import React from 'react';
+import React,{useState,useEffect} from 'react';
 import { StyleSheet, Text, View, Image, SafeAreaView, TouchableOpacity} from 'react-native';
 
 export default function CardDetails({ route, navigation }){
-    const { title, time, servings, rlocation, category, countDishes} = route.params;
+    const { id } = route.params;
+    const SERVER_IP = process.env.EXPO_PUBLIC_SERVER_IP;
+    const [donationData, setDonationData] = useState(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`http://${SERVER_IP}/donationDetails?id=${id}`);
+                const data = await response.json();
+                setDonationData(data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+        fetchData();
+    }, [id]);
+
 
     const handlePress = () => {
         navigation.navigate('reciverHomescreen');
     }
-    
+    if (!donationData) {
+        return <Text>Loading...</Text>;
+    }
+
+    const {no_of_servings, food_category, dishes, name, mobileNumber, location} = donationData;
     return (
         <>
         <View style = {styles.cardContainer}>
@@ -19,24 +39,28 @@ export default function CardDetails({ route, navigation }){
             <Text style={styles.title}>Donation 01</Text>
             <View style = {styles.container}>
                 <Image source={require("../assets/servingcount.png")} style={styles.servingsIcon1}/>
-                <Text style = {styles.servings}> {servings}</Text>
-                <Text style={styles.servingsDescription}>{category} | {countDishes} Dishes</Text>
+                <Text style = {styles.servings}> {no_of_servings} Servings</Text>
+                <Text style={styles.servingsDescription}>{food_category} | {dishes.length} Dishes</Text>
                 
                 <View style = {styles.line}/>
                 <View style = {styles.person}>
                 <Image source={require("../assets/person.png")} style={styles.cardIcons1}/>
-                <Text style={styles.personName}>{title}</Text>
+                <Text style={styles.personName}>{name}</Text>
                 <Image source={require("../assets/call.png")} style={styles.cardIcons2}/>
-                <Text style = {styles. personDescription}>9032012003</Text>
+                <Text style = {styles. personDescription}>{mobileNumber}</Text>
                 <Image source={require("../assets/location.png")} style={styles.cardIcons3}/>
-                <Text style = {styles.personDescription}>{rlocation}</Text>
+                <Text style = {styles.personDescription}>{location.address}</Text>
                 </View>
                 <View style = {styles.line}/>
                 
                 <View style = {styles.Dishes}>
-                    <Text style = {styles.dishesTitle}>Dishes (09)</Text>
-                    <Image source={require("../assets/Dishes.png")} style = {styles.dishesIcon}/>
-                    <Text style = {styles.dishesName}>Idly</Text>
+                    <Text style = {styles.dishesTitle}>Dishes ({dishes.length})</Text>
+                    {dishes.map((dish, index) => (
+                                <View key={index} style={styles.dishItem}>
+                                    <Image source={require("../assets/Dishes.png")} style={styles.dishesIcon} />
+                                    <Text style={styles.dishesName}>{dish}</Text>
+                    </View>
+                    ))}
                 </View>
             </View>
             
@@ -163,8 +187,6 @@ const styles = StyleSheet.create({
     dishesIcon:{
         width:20,
         height:20,
-        marginTop:40,
-        marginLeft:25,
         position:"absolute",
 
     },

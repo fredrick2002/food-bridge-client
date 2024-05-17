@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, SafeAreaView, TextInput, TouchableOpacity } from 'react-native';
 import axios from 'axios';
+// import DonorDetails from '../donorDetailsSchema';
 
-const SERVER_IP = process.env.EXPO_PRIVATE_SERVER_IP;
+const SERVER_IP = process.env.EXPO_PUBLIC_SERVER_IP;
 
 export default function Confimation({route, navigation}){
-    const { location, name, number, values, dishes, selectedCategory, selectedmealType,} = route.params;
+    
+    const { location, name, mobileNumber, values, dishes, selectedCategory, selectedmealType,} = route.params;
     const [district, setDistrict] = useState(''); // State to hold the district
+
 
     useEffect(() => {
         if (location) {
@@ -16,12 +19,15 @@ export default function Confimation({route, navigation}){
             });
         }
     }, [location]); 
+
+
     const donationData = {
         name: name,
+        mobileNumber: mobileNumber,
         no_of_servings: values,
-        food_category: selectedCategory,  // Ensure this corresponds to a simple string or number
-        meal_type: selectedmealType,      // Ensure this corresponds to a simple string or number
-        add_info: 'Some additional info', // Example placeholder
+        food_category: selectedCategory,  
+        meal_type: selectedmealType,      
+        add_info: ' ', 
         dishes: dishes,
         location: {
             address: location,
@@ -32,20 +38,21 @@ export default function Confimation({route, navigation}){
     const handleConfirm = async () => {
         console.log(donationData);
         try {
-          const response = await axios.post(`http://${SERVER_IP}/api/donations`, donationData,{
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-        
-          console.log('Donation Success:', response.data);
-          navigation.navigate('Success', { message: response.data.message });
+            const response = await axios.post(`http://${SERVER_IP}/api/donations`, donationData, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            console.log('Donation Success:', response.data);
+
+            navigation.navigate('Success', { message: response.data.message });
         } catch (error) {
-          console.error('Error submitting donation:', error);
+            console.error('Error submitting donation:', error);
         }
-      };
+    };
     async function getDistrictFromAddress(address) {
-        const apiKey = process.env.EXPO_PRIVATE_API_KEY; // Replace with your actual Google API key
+        const apiKey = process.env.EXPO_PUBLIC_API_KEY; // Replace with your actual Google API key
         const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${apiKey}`;
     
         try {
@@ -92,7 +99,7 @@ export default function Confimation({route, navigation}){
                                 <Image source={require("../assets/person.png")} style={styles.person} />
                             </View>
                             <View style={styles.textContainer}>
-                                <Text>{name} | {number}</Text>
+                                <Text>{name} | {mobileNumber}</Text>
                             </View>
                             <View style={styles.editContainer}>
                                 <TouchableOpacity >

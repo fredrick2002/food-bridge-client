@@ -91,13 +91,14 @@ export default function ReceiverHomeScreen({ route, navigation }) {
 
     // Now, map over your jsonObject to structure it for your application's state
     const fetchedData = jsonObject.map(item => ({
+      id:item._id,
       donorName: item.name,
       time: 'Some time ago', // Example placeholder
       servings: `${item.no_of_servings} servings`,
       rlocation: item.location ? item.location.district : 'No address provided',
       category: item.food_category,
       countDishes: item.dishes ? item.dishes.length : 0,
-      onPress: () => handlePress(item),
+      onPress: () => handlePress(item._id),
     }));
     
     setCardData(fetchedData);
@@ -110,16 +111,12 @@ export default function ReceiverHomeScreen({ route, navigation }) {
   
 
 
-  // const handlePress = (item) => {
-  //   navigation.navigate('CardDetails', {
-  //     donorName: item.name,
-  //     time: item.time,
-  //     servings: item.servings,
-  //     rlocation: item.rlocation,
-  //     category: item.category,
-  //     countDishes: item.countDishes
-  //   });
-  // }
+  const handlePress = (id) => {
+    console.log(id);
+    navigation.navigate('CardDetails', {
+      id:id
+    });
+  }
 
   // Split the address string at the comma and take the first part
   const addressParts = location.split(',');
@@ -154,11 +151,11 @@ export default function ReceiverHomeScreen({ route, navigation }) {
           <Card
             key={index}
             donorName={item.donorName}
-            servings={`${item.servings} servings`}
+            servings={item.servings}
             rlocation={item.rlocation}
             category={item.category}
             countDishes={item.countDishes}
-            onPress={() => handlePress(item)}
+            onPress={() => handlePress(item.id)}
           />
         ))}
       </View>

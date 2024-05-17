@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, Image, SafeAreaView, TextInput,TouchableOpacity
 export default function EnterDetails({ route, navigation }) {
     const { location } = route.params;
     const { name } = route.params;
-    const { number } = route.params;
+    const { mobileNumber } = route.params;
 
     const [numberofServing, setnumberofServing] = useState('');
     const [selectedServings, setSelectedServings] = useState(null);
@@ -31,7 +31,7 @@ export default function EnterDetails({ route, navigation }) {
         navigation.navigate('EnterDishes', { 
             name: name, 
             location: location, 
-            number: number, 
+            mobileNumber: mobileNumber, 
             values: numberofServing, 
             selectedCategory: selectedCategory, // Pass selected category
             selectedmealType: selectedmealType // Pass selected meal type

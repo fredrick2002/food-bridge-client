@@ -13,7 +13,7 @@ const chunkArray = (array, size) => {
 export default function EnterDishes({ route, navigation }) {
     const { location } = route.params;
     const { name } = route.params;
-    const { number } = route.params;
+    const { mobileNumber } = route.params;
     const { values } = route.params;
     const { selectedCategory } = route.params;
     const { selectedmealType } = route.params;
@@ -26,7 +26,7 @@ export default function EnterDishes({ route, navigation }) {
         navigation.navigate('Confirmation', { 
              name: name,
              location: location, 
-             number: number, 
+             mobileNumber: mobileNumber, 
              values: values, 
              dishes: dishes , 
              selectedCategory: selectedCategory,
@@ -95,9 +95,7 @@ export default function EnterDishes({ route, navigation }) {
                                             <Image source={require("../assets/delete.png")} style={styles.deleteIcon} />
                                         </TouchableOpacity>
                                     </View>
-                                </View>
-                                
-                                
+                                </View> 
                                 ))}
                             </View>
 

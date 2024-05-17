@@ -1,13 +1,32 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, SafeAreaView , TouchableOpacity} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function HomeScreen({ route, navigation }) {
+  const [userData, setUserData] = useState(null);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userDataFromStorage = await AsyncStorage.getItem('userData');
+        console.log(userDataFromStorage);
+        setUserData(userDataFromStorage ? JSON.parse(userDataFromStorage) : null);
+      } catch (error) {
+        console.error('Error retrieving user data from AsyncStorage:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  console.log('user:',userData);
+  
     const { location } = route.params;
-    const { name } = route.params;
-    const { number } = route.params;
+    const name = userData ? userData.name : '';
+    const mobileNumber = userData ? userData.mobileNumber : '';
+  
 
     const handlePress = () => {
-      navigation.navigate('EnterDetails', {name: name, location: location, number: number });
+      navigation.navigate('EnterDetails', {name: name, location: location, mobileNumber: mobileNumber });
     }
   
     // Split the address string at the comma and take the first part

@@ -8,7 +8,7 @@ export default function ReceiverLocation({ navigation, route }) {
   const {number} = route.params;
   const [locate, setLocate] = useState('');
   const apiKey = process.env.EXPO_PUBLIC_API_KEY; 
-  console.log(apiKey);
+  // console.log(apiKey);
 
   const getCurrentLocation = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();

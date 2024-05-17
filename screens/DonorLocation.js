@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity, Image , Alert} from 'react-native';
 import * as Location from 'expo-location';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function Donor1({ navigation, route }) {
-  const { name } = route.params;
-  const {number} = route.params;
+export default function DonorLocation({ navigation, route }) {
+
+  const apiKey = process.env.EXPO_PUBLIC_API_KEY; 
+
   const [locate, setLocate] = useState('');
 
   const getCurrentLocation = async () => {
@@ -20,7 +22,7 @@ export default function Donor1({ navigation, route }) {
   };
 
   const getAddressFromCoords = async (latitude, longitude) => {
-    const apiKey = process.env.EXPO_PRIVATE_KEY_API_KEY;  // Make sure you replace this with your actual API key
+     // Make sure you replace this with your actual API key
     const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`);
     const responseJson = await response.json();
     if (responseJson.results.length > 0) {
@@ -35,7 +37,7 @@ export default function Donor1({ navigation, route }) {
       const coords = await getCurrentLocation();
       const address = await getAddressFromCoords(coords.latitude, coords.longitude);
       setLocate(address); // Update the text input with the fetched address
-      navigation.navigate('HomeScreen', { location: address, name: name , number: number});
+      navigation.navigate('HomeScreen', { location: address});
     } catch (error) {
       Alert.alert('Error', 'Unable to fetch location: ' + error.message);
     }
