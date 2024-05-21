@@ -2,11 +2,43 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, SafeAreaView, TouchableOpacity, TextInput, Modal } from 'react-native';
 
 export default function Update({ route, navigation }) {
-    const { location, name, number, values, dishes, selectedCategory, selectedmealType } = route.params;
+
+    const SERVER_IP = process.env.EXPO_PUBLIC_SERVER_IP;
+
+    const [userData, setUserData] = useState(null);
+    const [donor, setDonor] = useState(null);
+    const number = userData ? userData.mobileNumber : '';
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const userDataFromStorage = await AsyncStorage.getItem('userData');
+                console.log(userDataFromStorage);
+                setUserData(userDataFromStorage ? JSON.parse(userDataFromStorage) : null);
+                axios.get(`http://${SERVER_IP}/api/donations/${number}`)
+                    .then(response => {
+                        setDonor(response.data.donor);
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            } catch (error) {
+                console.error('Error retrieving user data from AsyncStorage:', error);
+            }
+        };
+
+        fetchData();
+
+    }, []);
+
+
+    const { location, name, mobileNumber, no_of_servings, dishes, food_category, meal_type } = donor;
+
+    console.log(location.address);
 
     const [isOverlayVisible, setIsOverlayVisible] = useState(false);
     const [showDonationContainer, setShowDonationContainer] = useState(true);
-    const [servings, setServings] = useState(values);
+    // const [servings, setServings] = useState(values);
     const [showAlert, setShowAlert] = useState(false);
     const [isDeleted, setIsDeleted] = useState(false);
     const [showMoreOptions, setShowMoreOptions] = useState(false);
@@ -28,8 +60,8 @@ export default function Update({ route, navigation }) {
         setMoreOptionsPosition({ x: modalX, y: modalY });
         setShowMoreOptions(true);
     };
-    
-    
+
+
 
     const chunkArray = (array, size) => {
         const chunkedArray = [];
@@ -48,7 +80,7 @@ export default function Update({ route, navigation }) {
     };
 
     const updateServings = () => {
-        const updatedParams = { ...route.params, values: servings };
+        const updatedParams = { ...route.params, servings: servings };
         setIsOverlayVisible(false);
         navigation.setParams(updatedParams);
     };
@@ -77,21 +109,21 @@ export default function Update({ route, navigation }) {
         setShowMoreOptions(false);
     };
 
-    const handleaddDonationpress = async () => {
-        navigation.navigate('Homescreen', { name: name, location: location, number: number });
-      };
+    // const handleaddDonationpress = async () => {
+    //     navigation.navigate('Homescreen', { name: name, location: address, number: number });
+    //   };
 
-    useEffect(() => {
-        if (isDeleted && !showDonationContainer) {
-            navigation.navigate('Homescreen', { name: name, location: location, number: number });
-        }
-    }, [isDeleted, showDonationContainer]);
-    
+    // useEffect(() => {
+    //     if (isDeleted && !showDonationContainer) {
+    //         navigation.navigate('Homescreen', { name: name, location: location, number: number });
+    //     }
+    // }, [isDeleted, showDonationContainer]);
 
-    const addressParts = location.split(',');
+
+    const addressParts = address.split(',');
     const formattedLocation = addressParts[0].trim();
     const maxLength = 45;
-    const truncatedLocation = location.length > maxLength ? location.substring(0, maxLength) + '...' : location;
+    const truncatedLocation = address.length > maxLength ? address.substring(0, maxLength) + '...' : address;
 
     return (
         <SafeAreaView style={styles.container}>
@@ -112,106 +144,104 @@ export default function Update({ route, navigation }) {
                                     <Text style={styles.donationtextContainer}>Donation 01</Text>
                                 </View>
                                 <View style={styles.moreContainer}>
-    <TouchableOpacity style={styles.moreTouchable} onPress={(event) => handleConfirm1(event)}>
-        <Image source={require("../assets/more.png")} style={styles.moreIcon} />
-    </TouchableOpacity>
-</View>
+                                    <TouchableOpacity style={styles.moreTouchable} onPress={(event) => handleConfirm1(event)}>
+                                        <Image source={require("../assets/more.png")} style={styles.moreIcon} />
+                                    </TouchableOpacity>
+                                </View>
 
                             </View>
-                            <View >
-                                <Text style={styles.timetextContainer} >Estimated time - 9 minutes</Text>
-                            </View>
+
                         </View>
                         <View style={styles.liteLine} />
                         <View style={styles.servingDetails}>
-                            <Text style={styles.servingTitle}>{values} Servings</Text>
+                            <Text style={styles.servingTitle}>{no_of_servings} Servings</Text>
                             <View style={styles.rowContainer}>
-    {/* Render the food category icon */}
-    {/* Render the category icon */}
-{selectedCategory && (
-    <View >
-        <Image
-            source={
-                selectedCategory === 'Veg'
-                    ? require('../assets/vegbutton.png')
-                    : selectedCategory === 'Non-Veg'
-                    ? require('../assets/Nonvegbutton.png')
-                    : selectedCategory === 'Both'
-                    ? require('../assets/bothbutton.png')
-                    : null // Add additional conditions as needed
-            }
-            style={[
-                styles.icon,
-                selectedCategory === 'Veg' && styles.vegIcon,
-                selectedCategory === 'Non-Veg' && styles.nonVegIcon,
-                selectedCategory === 'Both' && styles.bothIcon,
-            ]}
-        />
-    </View>
-)}
+                                {/* Render the food category icon */}
+                                {/* Render the category icon */}
+                                {food_category && (
+                                    <View >
+                                        <Image
+                                            source={
+                                                selectedCategory === 'Veg'
+                                                    ? require('../assets/vegbutton.png')
+                                                    : selectedCategory === 'Non-Veg'
+                                                        ? require('../assets/Nonvegbutton.png')
+                                                        : selectedCategory === 'Both'
+                                                            ? require('../assets/bothbutton.png')
+                                                            : null // Add additional conditions as needed
+                                            }
+                                            style={[
+                                                styles.icon,
+                                                selectedCategory === 'Veg' && styles.vegIcon,
+                                                selectedCategory === 'Non-Veg' && styles.nonVegIcon,
+                                                selectedCategory === 'Both' && styles.bothIcon,
+                                            ]}
+                                        />
+                                    </View>
+                                )}
 
-{/* Render the meal type icon */}
-{selectedmealType && (
-    <View >
-        <Image
-            source={
-                selectedmealType === 'Breakfast'
-                    ? require('../assets/breakfastbutton.png')
-                    : selectedmealType === 'Lunch'
-                    ? require('../assets/lunchbutton.png')
-                    : selectedmealType === 'Dinner'
-                    ? require('../assets/dinnerbutton.png')
-                    : null // Add additional conditions as needed
-            }
-            style={[
-                styles.icon,
-                selectedmealType === 'Breakfast' && styles.breakfastIcon,
-                selectedmealType === 'Lunch' && styles.lunchIcon,
-                selectedmealType === 'Dinner' && styles.dinnerIcon,
-            ]}
-        />
-    </View>
-)}
+                                {/* Render the meal type icon */}
+                                {meal_type && (
+                                    <View >
+                                        <Image
+                                            source={
+                                                selectedmealType === 'Breakfast'
+                                                    ? require('../assets/breakfastbutton.png')
+                                                    : selectedmealType === 'Lunch'
+                                                        ? require('../assets/lunchbutton.png')
+                                                        : selectedmealType === 'Dinner'
+                                                            ? require('../assets/dinnerbutton.png')
+                                                            : null // Add additional conditions as needed
+                                            }
+                                            style={[
+                                                styles.icon,
+                                                selectedmealType === 'Breakfast' && styles.breakfastIcon,
+                                                selectedmealType === 'Lunch' && styles.lunchIcon,
+                                                selectedmealType === 'Dinner' && styles.dinnerIcon,
+                                            ]}
+                                        />
+                                    </View>
+                                )}
 
-</View>
+                            </View>
                             <Text style={styles.dishesTitle}>
                                 Dishes
                                 <Text style={styles.dishCount}> ({dishes.length})</Text>
                             </Text>
                             <View style={styles.dishesContainer}>
-                                {chunkArray(dishes, 5).map((column, colIndex) => (
-                                    <View key={colIndex} style={styles.column}>
-                                        {column.map((dish, index) => (
-                                            <View key={index} style={styles.dishRow}>
-                                                <Image source={require("../assets/arrowright.png")} style={styles.arrow} />
-                                                <Text style={styles.dishname}>{dish}</Text>
-                                            </View>
-                                        ))}
-                                    </View>
-                                ))}
+
+                                <View key={colIndex} style={styles.column}>
+                                    {dishes.map((dish, index) => (
+                                        <View key={index} style={styles.dishRow}>
+                                            <Image source={require("../assets/arrowright.png")} style={styles.arrow} />
+                                            <Text style={styles.dishname}>{dish}</Text>
+                                        </View>
+                                    ))}
+                                </View>
+
                             </View>
                         </View>
 
                         {/* More Options Modal */}
                         <Modal visible={showMoreOptions} transparent animationType="fade">
-    <TouchableOpacity style={styles.modalContainer} onPress={hideOptions}>
-        {/* Opaque layer */}
-        <View style={styles.opaqueLayer1} />
-    </TouchableOpacity>
-    {showMoreOptions && (
-        <View style={[styles.moreOptionsContainer, { top: moreOptionsPosition.y, left: moreOptionsPosition.x }]}>
-            <TouchableOpacity style={styles.optionButton} onPress={handleConfirm}>
-                <Image source={require("../assets/edit1.png")} style={styles.optionIcon} />
-                <Text style={styles.optionText}>Edit Donation</Text>
-            </TouchableOpacity>
-            <View style={styles.liteLine1} />
-            <TouchableOpacity style={styles.optionButton} onPress={deleteDonation}>
-                <Image source={require("../assets/delete1.png")} style={styles.optionIcon} />
-                <Text style={styles.optionText}>Delete Donation</Text>
-            </TouchableOpacity>
-        </View>
-    )}
-</Modal>
+                            <TouchableOpacity style={styles.modalContainer} onPress={hideOptions}>
+                                {/* Opaque layer */}
+                                <View style={styles.opaqueLayer1} />
+                            </TouchableOpacity>
+                            {showMoreOptions && (
+                                <View style={[styles.moreOptionsContainer, { top: moreOptionsPosition.y, left: moreOptionsPosition.x }]}>
+                                    <TouchableOpacity style={styles.optionButton} onPress={handleConfirm}>
+                                        <Image source={require("../assets/edit1.png")} style={styles.optionIcon} />
+                                        <Text style={styles.optionText}>Edit Donation</Text>
+                                    </TouchableOpacity>
+                                    <View style={styles.liteLine1} />
+                                    <TouchableOpacity style={styles.optionButton} onPress={deleteDonation}>
+                                        <Image source={require("../assets/delete1.png")} style={styles.optionIcon} />
+                                        <Text style={styles.optionText}>Delete Donation</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            )}
+                        </Modal>
 
 
 
@@ -638,7 +668,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         color: '#1CA672',
     },
-    alertContainer:{
+    alertContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         paddingHorizontal: 16,
@@ -648,13 +678,13 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         backgroundColor: '#322F35', // Adjust as needed
-        borderRadius:4,
-        marginHorizontal:8,
+        borderRadius: 4,
+        marginHorizontal: 8,
     },
-    alertText:{
-        color:"white",
-        fontSize:16,
-        paddingVertical:16,
+    alertText: {
+        color: "white",
+        fontSize: 16,
+        paddingVertical: 16,
     },
     undoButton: {
         position: 'absolute',
@@ -662,9 +692,9 @@ const styles = StyleSheet.create({
         padding: 16,
         borderRadius: 5,
     },
-    undoButtonText:{
-        color:'#D0BCFF',
-        fontSize:18,
+    undoButtonText: {
+        color: '#D0BCFF',
+        fontSize: 18,
     },
     moreOptionsContainer: {
         position: 'absolute',
@@ -672,26 +702,26 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 8,
         borderColor: '#ccc',
-        left: 10, 
+        left: 10,
     },
     optionRow: {
         flexDirection: 'row',
         alignItems: 'center',
         paddingVertical: 10,
-        paddingHorizontal:10,
+        paddingHorizontal: 10,
     },
-    optionButton:{
+    optionButton: {
         flexDirection: 'row',
         alignItems: 'center',
         marginRight: 10,
         paddingVertical: 10,
-        paddingHorizontal:10,
+        paddingHorizontal: 10,
     },
     optionIcon: {
         width: 16,
         height: 16,
         marginRight: 10,
-        marginLeft:10,
+        marginLeft: 10,
     },
     optionText: {
         fontSize: 16,

@@ -28,7 +28,9 @@ export default function HomeScreen({ route, navigation }) {
     const handlePress = () => {
       navigation.navigate('EnterDetails', {name: name, location: location, mobileNumber: mobileNumber });
     }
-  
+
+
+
     // Split the address string at the comma and take the first part
     const addressParts = location.split(',');
     const formattedLocation = addressParts[0].trim();
@@ -39,6 +41,8 @@ export default function HomeScreen({ route, navigation }) {
   
     return (
       <SafeAreaView style={styles.container}>
+
+        {/* LOCATION BAR */}
         <View style={styles.currentContainer}>
           <Image source={require("../assets/arrow.png")} style={styles.locationImage} />
           <Text style={styles.userLocation}>{formattedLocation}</Text>
@@ -46,6 +50,14 @@ export default function HomeScreen({ route, navigation }) {
         </View>
         <Image source={require("../assets/account.png")} style = {styles.usericon}/>
         <Text style={styles.userfullLocation}>{truncatedLocation}</Text>
+
+
+
+
+
+
+
+        {/* STARTING EMPTY DONATION PAGE */}
         <View style={styles.line} />
         <View>
             <Text style = {styles.headder}>Hey <Text style={styles.name}>{name}</Text></Text>
@@ -59,17 +71,23 @@ export default function HomeScreen({ route, navigation }) {
             <Text style={styles.buttontext}>Add to Donation</Text>
             </TouchableOpacity></View>
         </View>
-        {/* <View style={styles.liteline} /> */}
-        {/* <View style={styles.iconcontainer}>
-            <Image source={require("./assets/homepage.png")} style = {styles.homeicon}/>
-            <Image source={require("./assets/donateplus.png")} style = {styles.donateplusicon}/>
-            <Image source={require("./assets/message.png")} style = {styles.messageicon}/>
-        </View>
-        <View style={styles.icontextcontainer}>
-          <Text style = {styles.home}>Home</Text>
-          <Text style = {styles.donateplus}>Donate</Text>
-          <Text style = {styles.chat}>Chat</Text>
-        </View> */}
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+
+
+{/* DOWN NAVBAR */}
         <View style={styles.navbar}>
         <View>
             <Image source={require("../assets/homepage.png")} style = {styles.homeicon}/>
@@ -89,6 +107,11 @@ export default function HomeScreen({ route, navigation }) {
     );
   }
   
+
+
+
+
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,

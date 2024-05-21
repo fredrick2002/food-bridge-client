@@ -58,7 +58,7 @@ export default function ReceiverLocation({ navigation, route }) {
           onPress={(data, details = null) => {
             // 'details' is provided when fetchDetails = true
             console.log(data, details);
-            navigation.navigate('Homescreen', { location: details.formatted_address, name, number });
+            navigation.navigate('ReceiverHomescreen', { location: details.formatted_address, name, number });
           }}
           query={{
             key: apiKey,

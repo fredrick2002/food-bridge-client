@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, Image, SafeAreaView, TextInput, TouchableOpacity } from 'react-native';
 
-export default function Success({route, navigation}){
+export default function Success({ route, navigation }) {
     const { location, name, number, values, dishes, selectedCategory, selectedMealType } = route.params;
 
     const handleDone = () => {
-        navigation.navigate('Update', { name: name, location: location, number: number, values: values, dishes: dishes });
+        navigation.navigate('HomeScreen', {});
     };
 
     console.log(location);
 
     return (
         <SafeAreaView style={styles.container}>
-            <Image source={require("../assets/success.png")} style={styles.successImg}/>
+            <Image source={require("../assets/success.png")} style={styles.successImg} />
             <View style={styles.successDescriptionContainer}>
                 <Text style={styles.successDescription}>
                     Thank you for posting your donation.{'\n'}
@@ -28,24 +28,24 @@ export default function Success({route, navigation}){
     )
 }
 
-const styles = StyleSheet.create({ 
+const styles = StyleSheet.create({
     container: {
         flex: 1,
         marginTop: 20,
         backgroundColor: 'white',
     },
-    successImg:{
+    successImg: {
         alignSelf: 'center',
-        marginTop:'40%',
-        height:200,
-        width:200,
+        marginTop: '40%',
+        height: 200,
+        width: 200,
     },
     successDescriptionContainer: {
         alignItems: 'center',
         justifyContent: 'center',
         marginTop: 50,
-        paddingLeft:20,
-        paddingRight:20,
+        paddingLeft: 20,
+        paddingRight: 20,
     },
     successDescription: {
         fontSize: 18,
@@ -72,13 +72,13 @@ const styles = StyleSheet.create({
         bottom: 0, // Position at the bottom with a margin
         left: 0, // Align to the left
         right: 0, // Align to the right
-    },    
-    textNext:{
-        position:"absolute",
-        fontSize:18,
-        color:"#FFFFFF",
-        alignSelf:"center",
-        marginTop:16,
-        marginLeft:'40%',
+    },
+    textNext: {
+        position: "absolute",
+        fontSize: 18,
+        color: "#FFFFFF",
+        alignSelf: "center",
+        marginTop: 16,
+        marginLeft: '40%',
     },
 });

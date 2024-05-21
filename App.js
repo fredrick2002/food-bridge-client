@@ -17,6 +17,7 @@ import CardDetails from './screens/CardDetails';
 import DonorLogin from './screens/DonorLogin';
 import ReceiverLogin from './screens/ReceiverLogin';
 import Login from './screens/Login';
+import ChatScreen from './screens/ChatScreen';
 
 const Stack = createStackNavigator();
 
@@ -40,7 +41,7 @@ export default function App() {
   <Stack.Screen name='ReceiverLocation' component={ReceiverLocation} options={{headerShown: false}}/>
   <Stack.Screen name='ReceiverHomescreen' component={ReceiverHomeScreen} options={{headerShown: false}}/>
   <Stack.Screen name='CardDetails' component={CardDetails} options={{headerShown: false}}/>
-
+  <Stack.Screen name='ChatScreen' component={ChatScreen} options={{headerShown: false}}/>
   </Stack.Navigator>
   </NavigationContainer>
   );
